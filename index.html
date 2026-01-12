@@ -3,282 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi người thương ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <title>You are my Universe 🪐</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* --- CẤU HÌNH GIAO DIỆN --- */
+        /* --- CẤU HÌNH CƠ BẢN --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             height: 100vh;
-            /* Hình nền động gradient lãng mạn */
-            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            background: #000; /* Màu nền vũ trụ */
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Nunito', sans-serif;
-            overflow: hidden;
-            position: relative;
+            color: white;
+            perspective: 1000px; /* Tạo chiều sâu 3D */
         }
 
-        /* Hiệu ứng bong bóng bay nền cho sinh động */
-        .bg-bubbles {
+        /* --- BACKGROUND SAO (CANVAS) --- */
+        #star-canvas {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; left: 0;
             z-index: 0;
-            overflow: hidden;
-        }
-        .bg-bubbles li {
-            position: absolute;
-            list-style: none;
-            display: block;
-            width: 40px; height: 40px;
-            background-color: rgba(255, 255, 255, 0.2);
-            bottom: -150px;
-            border-radius: 50%;
-            animation: square 25s infinite;
-            transition-timing-function: linear;
-        }
-        .bg-bubbles li:nth-child(1) { left: 10%; width: 80px; height: 80px; animation-delay: 0s; }
-        .bg-bubbles li:nth-child(2) { left: 20%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
-        .bg-bubbles li:nth-child(3) { left: 25%; width: 20px; height: 20px; animation-delay: 4s; }
-        .bg-bubbles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
-        .bg-bubbles li:nth-child(5) { left: 70%; width: 20px; height: 20px; animation-delay: 0s; }
-        
-        @keyframes square {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-120vh) rotate(600deg); }
         }
 
-        /* --- KHUNG CHÍNH (GLASSMORPHISM) --- */
-        .glass-container {
+        /* --- HỆ MẶT TRỜI 3D --- */
+        .solar-system {
+            position: absolute;
+            width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            transform-style: preserve-3d;
+            pointer-events: none; /* Để không che nút bấm */
+        }
+
+        /* Quỹ đạo */
+        .orbit {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform-style: preserve-3d;
+            animation: rotate infinite linear;
+        }
+
+        /* Hành tinh */
+        .planet {
+            position: absolute;
+            top: 50%; left: 50%;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5), 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* Thiết lập từng hành tinh */
+        .orbit-1 { width: 300px; height: 300px; animation-duration: 10s; }
+        .planet-1 { width: 20px; height: 20px; background: #ff5f6d; transform: translateX(150px); }
+
+        .orbit-2 { width: 500px; height: 500px; animation-duration: 15s; animation-direction: reverse; }
+        .planet-2 { width: 30px; height: 30px; background: #4facfe; transform: translateX(250px); }
+
+        .orbit-3 { width: 700px; height: 700px; animation-duration: 25s; }
+        .planet-3 { width: 15px; height: 15px; background: #f093fb; transform: translateX(350px); }
+
+        @keyframes rotate {
+            0% { transform: rotateZ(0deg) rotateX(60deg); }
+            100% { transform: rotateZ(360deg) rotateX(60deg); }
+        }
+
+        /* --- KHUNG THÔNG ĐIỆP (CARD) --- */
+        .card {
             position: relative;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 40px;
-            text-align: center;
             width: 90%;
             max-width: 450px;
-            transition: all 0.5s ease;
+            background: rgba(16, 20, 30, 0.6); /* Màu tối kính mờ */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(79, 172, 254, 0.3);
+            animation: floatCard 4s ease-in-out infinite;
         }
 
-        /* ẢNH TRÒN XOAY */
-        .avatar-wrapper {
-            width: 150px; height: 150px;
-            margin: -80px auto 20px; /* Đẩy ảnh lên trên khung */
-            border-radius: 50%;
-            border: 5px solid white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            overflow: hidden;
-            animation: float 6s ease-in-out infinite;
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
-        .avatar-wrapper img {
+
+        /* AVATAR "MẶT TRỜI" */
+        .sun-avatar {
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            margin: -80px auto 20px;
+            border: 4px solid rgba(255,255,255,0.8);
+            box-shadow: 0 0 30px #ff9a9e; /* Hiệu ứng phát sáng như mặt trời */
+            overflow: hidden;
+            position: relative;
+        }
+        .sun-avatar img {
             width: 100%; height: 100%;
             object-fit: cover;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
-            color: #d63384;
-            font-size: 2.8rem;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff9a9e, #fecfef, #feada6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 154, 158, 0.5);
         }
 
-        p {
-            color: #4a4a4a;
+        p.message {
             font-size: 1.1rem;
             line-height: 1.6;
             margin-bottom: 30px;
-            font-weight: 600;
+            color: #e0e0e0;
         }
 
-        /* NÚT BẤM */
+        /* NÚT BẤM NEON */
         .btn-group {
             display: flex;
             justify-content: center;
             gap: 20px;
-            min-height: 60px; /* Giữ không gian để nút không bị nhảy layout */
+            min-height: 50px;
         }
 
         button {
-            padding: 12px 30px;
+            padding: 12px 35px;
             border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
+            border-radius: 30px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-family: 'Nunito', sans-serif;
-            z-index: 100; /* Đảm bảo nút luôn nổi lên trên */
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            overflow: hidden;
         }
 
         #yesBtn {
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            color: white;
-            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+            background: transparent;
+            color: #fff;
+            border: 2px solid #4facfe;
+            box-shadow: 0 0 15px #4facfe, inset 0 0 15px #4facfe;
         }
         #yesBtn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(255, 65, 108, 0.6);
+            background: #4facfe;
+            box-shadow: 0 0 30px #4facfe, 0 0 60px #4facfe;
+            transform: scale(1.05);
         }
 
         #noBtn {
-            background: white;
-            color: #ff4b2b;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            /* Quan trọng để nút có thể di chuyển */
-            position: relative; 
+            background: transparent;
+            color: #fff;
+            border: 2px solid #ff5f6d;
+            box-shadow: 0 0 15px #ff5f6d;
         }
 
-        /* MÀN HÌNH TỎ TÌNH THÀNH CÔNG */
-        #success-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* --- MÀN HÌNH SUCCESS --- */
+        #universe-success {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.9);
+            background: black;
             z-index: 1000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
         }
-        #success-container h2 {
-            font-family: 'Dancing Script', cursive;
-            color: #ff416c;
-            font-size: 4rem;
-            margin-top: 20px;
-        }
         
+        #universe-success h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: #fff;
+            text-shadow: 0 0 20px #ff00de;
+            animation: zoomIn 1s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
     </style>
 </head>
 <body>
-    
-    <ul class="bg-bubbles">
-        <li></li><li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li><li></li>
-    </ul>
 
     <audio id="bgMusic" loop>
         <source src="https://files.catbox.moe/52jlxf.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="glass-container" id="mainCard">
-        <div class="avatar-wrapper">
-            <img src="https://i.ibb.co/whNW2ZGd/20200503-103535.jpg" alt="Avatar">
-        </div>
-        
-        <h1>Gửi cậu...</h1>
-        <p id="question">Thế giới của tớ sẽ đẹp hơn rất nhiều nếu có cậu.<br>Làm người yêu tớ nhé?</p>
+    <canvas id="star-canvas"></canvas>
 
-        <div class="btn-group">
-            <button id="yesBtn">Đồng ý ❤️</button>
-            <button id="noBtn">Không đâu</button>
+    <div class="solar-system">
+        <div class="orbit orbit-1">
+            <div class="planet planet-1"></div>
+        </div>
+        <div class="orbit orbit-2">
+            <div class="planet planet-2"></div>
+        </div>
+        <div class="orbit orbit-3">
+            <div class="planet planet-3"></div>
         </div>
     </div>
 
-    <div id="success-container">
-        <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Kiss" style="max-width: 300px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-        <h2>Yêu cậu nhiều! ❤️</h2>
+    <div class="card" id="mainCard">
+        <div class="sun-avatar">
+            <img src="https://i.ibb.co/whNW2ZGd/20200503-103535.jpg" alt="My Sun">
+        </div>
+        
+        <h1>Gửi Cậu!</h1>
+        <p class="message">
+            Nếu tớ là Trái Đất, cậu sẽ là Mặt Trời.<br>
+            Vì tớ chỉ muốn quay quanh cậu suốt đời thôi.<br>
+            Làm người yêu tớ nhé?
+        </p>
+
+        <div class="btn-group">
+            <button id="yesBtn">Đồng Ý</button>
+            <button id="noBtn">Không Đâu</button>
+        </div>
+    </div>
+
+    <div id="universe-success">
+        <h2 id="successText">Yêu Cậu 3000! ❤️</h2>
+        <canvas id="fireworks"></canvas>
     </div>
 
     <script>
+        // --- PHẦN 1: TẠO BẦU TRỜI SAO (STARFIELD) ---
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let stars = [];
+        
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        
+        // Tạo lớp Sao
+        class Star {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5; // Tốc độ trôi ngang
+                this.speedY = (Math.random() - 0.5) * 0.5; // Tốc độ trôi dọc
+                this.opacity = Math.random();
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Hiệu ứng lấp lánh
+                this.opacity += (Math.random() - 0.5) * 0.1;
+                if(this.opacity < 0) this.opacity = 0;
+                if(this.opacity > 1) this.opacity = 1;
+
+                // Nếu sao trôi ra ngoài màn hình thì reset vị trí
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+            
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < 150; i++) { // Số lượng sao
+                stars.push(new Star());
+            }
+        }
+        
+        function animateStars() {
+            ctx.clearRect(0, 0, width, height);
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            requestAnimationFrame(animateStars);
+        }
+        
+        window.addEventListener('resize', () => { resize(); initStars(); });
+        resize();
+        initStars();
+        animateStars();
+
+        // --- PHẦN 2: LOGIC NÚT BẤM VÀ ÂM NHẠC ---
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const mainCard = document.getElementById('mainCard');
-        const successContainer = document.getElementById('success-container');
+        const successScreen = document.getElementById('universe-success');
         const music = document.getElementById('bgMusic');
 
-        // Bắt sự kiện click vào bất kỳ đâu lần đầu để phát nhạc (Do chính sách trình duyệt)
-        document.body.addEventListener('click', function() {
-            if (music.paused) {
-                music.play();
-            }
+        // Bật nhạc khi click lần đầu
+        document.body.addEventListener('click', () => {
+            if(music.paused) music.play();
         }, { once: true });
 
-        // --- LOGIC NÚT "KHÔNG" CHẠY TRỐN ---
-        // Lương chú ý đoạn này:
-        // Anh dùng cả 'mouseover' (cho PC) và 'click' (cho điện thoại/ipad)
-        // 'touchstart' là sự kiện chạm tay vào màn hình cảm ứng
-        
-        const moveButton = () => {
-            // Lấy kích thước của cửa sổ màn hình hiện tại
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-
-            // Lấy kích thước của nút
-            const btnWidth = noBtn.offsetWidth;
-            const btnHeight = noBtn.offsetHeight;
-
-            // Tính toán vị trí ngẫu nhiên
-            // Math.random() ra số từ 0 -> 1
-            // Nhân với (width - btnWidth) để đảm bảo nút KHÔNG BAO GIỜ chạy ra ngoài lề phải
-            // Tương tự với height
+        // Nút "Không" chạy trốn (Thông minh hơn: không chạy ra ngoài màn hình)
+        function moveButton() {
+            const btnRect = noBtn.getBoundingClientRect();
+            const cardRect = mainCard.getBoundingClientRect();
             
-            // Trừ đi khoảng đệm (padding) 50px để nút không bị sát mép quá
-            const newLeft = Math.floor(Math.random() * (width - btnWidth - 50));
-            const newTop = Math.floor(Math.random() * (height - btnHeight - 50));
+            // Giới hạn vùng di chuyển (Padding 50px)
+            const maxX = window.innerWidth - btnRect.width - 50;
+            const maxY = window.innerHeight - btnRect.height - 50;
 
-            // Gán vị trí mới (phải dùng fixed để thoát khỏi bố cục cha)
+            let randomX = Math.random() * maxX;
+            let randomY = Math.random() * maxY;
+
+            // Đảm bảo nút không bị che bởi cái Card (tương đối thôi)
+            // Code đơn giản thì cho nó position fixed đè lên tất cả
             noBtn.style.position = 'fixed';
-            noBtn.style.left = newLeft + 'px';
-            noBtn.style.top = newTop + 'px';
-        };
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.zIndex = '100'; // Luôn nổi lên trên
+        }
 
-        noBtn.addEventListener('mouseover', moveButton); // PC: Chuột vừa chạm vào là chạy
-        noBtn.addEventListener('click', moveButton);     // Điện thoại: Bấm vào mới chạy (hoặc dùng touchstart)
+        noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Ngăn chặn click mặc định trên điện thoại
+            e.preventDefault();
             moveButton();
         });
 
-        // --- LOGIC NÚT "ĐỒNG Ý" ---
+        // Nút "Đồng ý"
         yesBtn.addEventListener('click', () => {
-            mainCard.style.display = 'none'; // Ẩn khung tỏ tình
-            successContainer.style.display = 'flex'; // Hiện màn hình thành công
+            mainCard.style.display = 'none'; // Ẩn card
+            document.querySelector('.solar-system').style.display = 'none'; // Ẩn hệ mặt trời
+            successScreen.style.display = 'flex'; // Hiện màn hình success
             
-            // Bắn tim tung tóe
-            createHearts();
+            // Hiệu ứng nổ tung vũ trụ (đơn giản bằng CSS animation ở text)
+            // Có thể thêm pháo hoa canvas nếu muốn phức tạp hơn
         });
 
-        // Hàm tạo mưa tim
-        function createHearts() {
-            setInterval(() => {
-                const heart = document.createElement('div');
-                heart.innerHTML = '❤️';
-                heart.style.position = 'fixed';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.top = '-10vh';
-                heart.style.fontSize = Math.random() * 20 + 20 + 'px';
-                heart.style.animation = 'fall 3s linear forwards';
-                heart.style.zIndex = '9999';
-                
-                // Thêm style animation trực tiếp
-                const style = document.createElement('style');
-                style.innerHTML = `
-                    @keyframes fall {
-                        to { transform: translateY(110vh) rotate(360deg); }
-                    }
-                `;
-                document.head.appendChild(style);
-                
-                document.body.appendChild(heart);
-                
-                setTimeout(() => {
-                    heart.remove();
-                }, 3000);
-            }, 100);
-        }
     </script>
 </body>
 </html>
